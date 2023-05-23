@@ -14,7 +14,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	log.Print("received a request")
 
 	// Command to execute
-	cmd := exec.Command("/app/cloudquery", "sync", "/config.yaml", "--log-console")
+	cmd := exec.Command("/app/cloudquery", "sync", "/secrets/config.yaml", "--log-console")
 
 	// Create pipes for stdout and stderr
 	stdoutPipe, err := cmd.StdoutPipe()
