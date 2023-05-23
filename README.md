@@ -1,6 +1,6 @@
 # CloudQuery Cloud Run Example
 
-This repository contains a small Docker file that starts a webserver on port 8080 for use with Cloud Run. When the server receives a request on the port, it starts a CloudQuery sync using a config file that should be mounted at `/config.yaml`.
+This repository contains a small Docker file that starts a webserver on port 8080 for use with Cloud Run. When the server receives a request on the port, it starts a CloudQuery sync using a config file that should be mounted at `/secrets/config.yaml`.
 
 ## Deployment
 
