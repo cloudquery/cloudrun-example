@@ -13,8 +13,10 @@ import (
 func handler(w http.ResponseWriter, r *http.Request) {
 	log.Print("received a request")
 
+	cloudQueryAPIKey := os.Getenv("CLOUDQUERY_API_KEY")
 	// Command to execute
 	cmd := exec.Command("/app/cloudquery", "sync", "/secrets/config.yaml", "--log-console")
+	cmd.Env = []string{fmt.Sprintf("CLOUDQUERY_API_KEY=%s", cloudQueryAPIKey)}
 
 	// Create pipes for stdout and stderr
 	stdoutPipe, err := cmd.StdoutPipe()
@@ -64,6 +66,9 @@ func streamOutput(pipe io.Reader, name string) {
 }
 
 func main() {
+	if os.Getenv("CLOUDQUERY_API_KEY") == "" {
+		log.Fatal("CLOUDQUERY_API_KEY is required")
+	}
 	log.Print("starting server...")
 
 	http.HandleFunc("/", handler)
