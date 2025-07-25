@@ -8,18 +8,29 @@ You should also generate a CloudQuery API key and set it as an environment varia
 
 This guide is still incomplete, but the rough steps are:
 
-1. Build the image locally
+1. Create a Docker repository in Google Cloud Artifact Registry.
+
+2. Get the latest version of CloudQuery Container from [ghcr.io/cloudquery/cloudquery](https://ghcr.io/cloudquery/cloudquery). Update the version in the Dockerfile
+
+3. Build the image locally. Replace the `<REGION>-docker.pkg.dev/<PROJECT>/<REPOSITORY>/<IMAGE_NAME>:<VERSION>` with the proper values.
 
    ```bash
-   docker build --platform=linux/amd64 -t gcr.io/my-project/cloudquery-cloudrun:3.4.0 .
+   docker build --platform=linux/amd64 -t <REGION>-docker.pkg.dev/<PROJECT>/<REPOSITORY>/<IMAGE_NAME>:<VERSION> .
    ```
 
-2. Upload the image to GCR:
+   Example:
 
    ```bash
-   docker push gcr.io/my-project/cloudquery-cloudrun:3.4.0
+   docker build --platform=linux/amd64 -t europe-north1-docker.pkg.dev/cloudquery-project/cq-repository/cq-image:6.24.2 .
+
    ```
 
-3. Create a cloud run job using the newly pushed image. Make sure to mount your CloudQuery config file at `/secrets/config.yaml` (using Secrets). Note that it is possible to combine sources and destinations in a single config file by separating the sections with `---` (see [the docs](https://www.cloudquery.io/docs/core-concepts/configuration))
+4. Upload the image to Artifact Registry:
 
-4. Schedule the job via [Cloud Scheduler](https://cloud.google.com/scheduler).
+   ```bash
+   docker push europe-north1-docker.pkg.dev/cloudquery-project/cq-repository/cq-image:6.24.2
+   ```
+
+5. Create a cloud run job using the newly pushed image. Make sure to mount your CloudQuery config file at `/secrets/config.yaml` (using Secrets). Note that it is possible to combine sources and destinations in a single config file by separating the sections with `---` (see [the docs](https://www.cloudquery.io/docs/core-concepts/configuration))
+
+6. Schedule the job via [Cloud Scheduler](https://cloud.google.com/scheduler).
