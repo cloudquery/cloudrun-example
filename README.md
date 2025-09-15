@@ -31,6 +31,20 @@ This guide is still incomplete, but the rough steps are:
    docker push europe-north1-docker.pkg.dev/cloudquery-project/cq-repository/cq-image:6.24.2
    ```
 
-5. Create a cloud run job using the newly pushed image. Make sure to mount your CloudQuery config file at `/secrets/config.yaml` (using Secrets). Note that it is possible to combine sources and destinations in a single config file by separating the sections with `---` (see [the docs](https://www.cloudquery.io/docs/core-concepts/configuration))
+5. Create a cloud run job using the newly pushed image. 
+
+- On the `Containers` tab, be sure to set the following container arguments:
+```text
+--read-only
+--add-host=host.docker.internal:host-gateway
+--no-log-file
+sync
+/secrets/config.yaml
+```
+  - The arguments respect the fact that Cloud Run is read-only (except `os.tmpdir()`).
+  - For a fuller explanation please see [here](https://docs.cloudquery.io/docs/deployment/read-only-containers).
+
+- Make sure to mount your CloudQuery config file at `/secrets/config.yaml` (using Secrets). 
+- Note that it is possible to combine sources and destinations in a single config file by separating the sections with `---` (see [the docs](https://www.cloudquery.io/docs/core-concepts/configuration))
 
 6. Schedule the job via [Cloud Scheduler](https://cloud.google.com/scheduler).
